@@ -25,7 +25,7 @@ class HttpResponse:
         self.status_message = "null"
         self.server_name = "Custom"
         self.request_date = datetime.datetime.now()
-        self.modified_date = os.path.getmtime("server.py")
+        self.modified_date = 0
         self.acc_ranges = "bytes"
         self.content_length = 0
         self.content_type = ""
@@ -47,13 +47,13 @@ def get_file_on_path(response: HttpResponse, path):
             print(os.path.splitext(path))
             response.content_length = os.path.getsize(path)
             if os.path.splitext(path)[1].strip(".") in ["html","css","js","txt","md"]:
-                
                 response.content_type = f"text/{os.path.splitext(path)[1].strip('.')}"
             elif os.path.splitext(path)[1].strip(".") in ["jpeg","png","webp","svg"]:
                 response.content_type = f"image/{os.path.splitext(path)[1].strip('.')}"
             response.status, response.status_message = 200, "OK"
 
             f = open(path,"rb")
+            response.modified_date = datetime.datetime.fromtimestamp(os.path.getmtime(path))
             return f
         else:
             response.status = 404
@@ -123,7 +123,6 @@ def service_connection(key: selectors.SelectorKey, mask):
             sock.close()
     if mask & selectors.EVENT_WRITE:
         if data.outb:
-            print(f"Echoing {data.outb!r} to {data.addr}")
             sent = sock.send(data.outb)  # Should be ready to write
             data.outb = data.outb[sent:]
             sel.unregister(sock)
@@ -131,7 +130,7 @@ def service_connection(key: selectors.SelectorKey, mask):
 
 def main():
     #host, port = sys.argv[1].split(":")[0], int(sys.argv[1].split(":")[1])
-    host,port = "10.106.1.91", 8080
+    host,port = "0.0.0.0", 8080
     lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     lsock.bind((host,port))
     lsock.listen()
@@ -148,7 +147,8 @@ def main():
                     accept_wrapper(key.fileobj)
                 else:
                     service_connection(key,mask)
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt or Exception) as e:
+        e.with_traceback(None)
         print("Server Closing")
 
 if __name__ == "__main__":
