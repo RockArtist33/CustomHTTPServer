@@ -1,0 +1,156 @@
+body {
+  background-color: #282828;
+  color: white;
+
+}
+
+.Header {
+  background-color: rgba(151, 57, 57, 0);
+
+}
+
+.Icon-Header {
+  background: rgb(53, 53, 53);
+  transition: background-color 0.5s ease-out 100ms;
+  width: 100px;
+  padding: 1px;
+  height: 100px;
+  content: "\f0c9";
+  margin: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  border-radius: 15px;
+  align-items: center;
+}
+
+.Icon-Header:hover {
+  
+  background: rgb(197, 197, 197);
+
+}
+
+.Navbar {
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  
+  
+}
+.Navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  overflow: hidden;
+  background-color: rgb(49, 49, 58);
+}
+
+.Navbar ul li{
+  float: left;
+  
+}
+.Navbar ul li a{
+  display: block;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding: 10px 16px;
+  font-family: 'Courier New', Courier, monospace;
+  text-decoration: none;
+  color: rgb(209, 197, 197);
+}
+.Navbar ul li a:hover{
+  background-color: rgb(22, 22, 26);
+}
+
+.Body{
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 30px;
+  display:block;
+  position: relative;
+  top: 25px;
+  text-align: center;
+}
+
+
+
+.Cap-Proj {
+  display:inline-table;
+  position: relative;
+  padding-bottom: 15px;
+  transition: font-size 0.5s ease;
+  width: 622px;
+  border-color: black;
+  padding-left: 15px;
+  padding-top: 15px;
+  border-style: solid;
+  font-size: 0;
+  overflow:hidden;
+  align: left;
+  
+  
+}
+
+.Cap-Proj h2 {
+  overflow: hidden;
+  font-style:oblique;
+  text-decoration: underline;
+}
+
+.Cap-Proj img {
+  display:block;
+  position: relative;
+  border-color: black;
+  border-style: solid;
+  border-spacing: 20px;
+  width: 600px;
+  align-self: left;
+  
+}
+
+.Cap-Proj:hover {
+  font-size: 24px;
+  overflow:visible
+}
+
+.TKPY-PROJ {
+  display:inline-table;
+  position: relative;
+  padding-bottom: 15px;
+  transition: font-size 0.5s ease;
+  width: 622px;
+  border-color: black;
+  padding-left: 15px;
+  padding-top: 15px;
+  border-style: solid;
+  font-size: 0;
+  overflow:hidden;
+  
+  
+}
+
+.TKPY-PROJ h2 {
+  overflow: hidden;
+  font-style:oblique;
+  text-decoration: underline;
+}
+
+.TKPY-PROJ img {
+  display:block;
+  position: relative;
+  border-color: black;
+  border-style: solid;
+  border-spacing: 20px;
+  width: 600px;
+  align-self: left;
+  
+}
+
+.TKPY-PROJ:hover {
+  font-size: 24px;
+  overflow:visible
+}
