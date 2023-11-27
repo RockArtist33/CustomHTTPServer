@@ -44,7 +44,6 @@ def get_file_on_path(response: HttpResponse, path):
         path = "."+path
     try:
         if os.path.exists(path):
-            print(os.path.splitext(path))
             response.content_length = os.path.getsize(path)
             if os.path.splitext(path)[1].strip(".") in ["html","css","js","txt","md"]:
                 response.content_type = f"text/{os.path.splitext(path)[1].strip('.')}"
