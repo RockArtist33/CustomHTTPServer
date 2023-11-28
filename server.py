@@ -80,16 +80,19 @@ def service_connection(key: selectors.SelectorKey, mask):
         if recv_data:
             request = request_parser(recv_data)
             response = HttpResponse()
-            f = get_file_on_path(response, request.request_target)
-            try:
-                response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\n\r\n", "ISO-8859-1")+f.read()
-            except:
-                response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\n\r\n", "ISO-8859-1")
-            data.outb += response_bytes
-            
+            if request.request_method == b"GET":
+                f = get_file_on_path(response, request.request_target)
+                try:
+                    response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\n\r\n", "ISO-8859-1")+f.read()
+                except:
+                    response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\n\r\n", "ISO-8859-1")
+                data.outb += response_bytes
+            elif request.request_method == b"POST":
+                print(request.other_headers)
+
 
         else:
-            print(f"Closing Connection to {data.addr}")
+            print(f"Closing Connection to this massive mother {data.addr}")
             sel.unregister(sock)
             sock.close()
     if mask & selectors.EVENT_WRITE:
@@ -105,9 +108,9 @@ def main():
     lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     lsock.bind((host,port))
     lsock.listen()
-    print(f"[{datetime.datetime.now()}] HTTP Server started on {host}:{port}")
-    print(f"[{datetime.datetime.now()}] Access Server on http://{host}:{port}")
-    print(f"[{datetime.datetime.now()}] Press CONTROL-C to exit server")
+    print(f"[{datetime.datetime.now()}] HTTPSSS Server started on {host}:{port}")
+    print(f"[{datetime.datetime.now()}] Access Your mom on http://{host}:{port}")
+    print(f"[{datetime.datetime.now()}] Press CONTROL-P to exit server")
     lsock.setblocking(False)
     sel.register(lsock, selectors.EVENT_READ, data=None)
     try:
