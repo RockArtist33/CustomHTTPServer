@@ -63,6 +63,34 @@ def get_file_on_path(response: HttpResponse, path):
         response.status_message = "Not Found"
         return ""
         
+    
+"""
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((HOST,PORT))
+    s.listen()
+    conn, addr = s.accept()
+    with conn:
+        print(f"Connected by {addr}")
+        try:
+            while True:
+                data = conn.recv(1024)
+                if not data:
+                    break
+                data = data.split(b"\r\n")
+                request = HttpRequest(data)
+
+                get_file_on_path(request.request_target)
+                with open("./index.html", "r") as f:
+                    file_contents = f.read()
+                    response = bytes(f"{request.request_prot_ver} 200 OK\r\nDate: {datetime.datetime.now()}\r\nServer: Custom\r\nLast-Modified: {datetime.datetime.now()}\r\nAccept-Ranges: bytes\r\nContent-Length: {len(file_contents)}\r\nContent-Type: text/html\r\n\r\n", "ISO-8859-1" )
+                    response = response+bytes(f"{file_contents}\r\n", "ISO-8859-1")
+                print(response)
+                
+                conn.sendall(response)
+                
+        except KeyboardInterrupt:
+            pass
+"""
 
 def accept_wrapper(sock: socket.socket):
     conn, addr = sock.accept()
