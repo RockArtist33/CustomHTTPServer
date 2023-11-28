@@ -44,7 +44,6 @@ def get_file_on_path(response: HttpResponse, path):
         path = "."+path
     try:
         if os.path.exists(path):
-            print(os.path.splitext(path))
             response.content_length = os.path.getsize(path)
             if os.path.splitext(path)[1].strip(".") in ["html","css","js","txt","md"]:
                 response.content_type = f"text/{os.path.splitext(path)[1].strip('.')}"
@@ -64,34 +63,6 @@ def get_file_on_path(response: HttpResponse, path):
         response.status_message = "Not Found"
         return ""
         
-    
-"""
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST,PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print(f"Connected by {addr}")
-        try:
-            while True:
-                data = conn.recv(1024)
-                if not data:
-                    break
-                data = data.split(b"\r\n")
-                request = HttpRequest(data)
-
-                get_file_on_path(request.request_target)
-                with open("./index.html", "r") as f:
-                    file_contents = f.read()
-                    response = bytes(f"{request.request_prot_ver} 200 OK\r\nDate: {datetime.datetime.now()}\r\nServer: Custom\r\nLast-Modified: {datetime.datetime.now()}\r\nAccept-Ranges: bytes\r\nContent-Length: {len(file_contents)}\r\nContent-Type: text/html\r\n\r\n", "ISO-8859-1" )
-                    response = response+bytes(f"{file_contents}\r\n", "ISO-8859-1")
-                print(response)
-                
-                conn.sendall(response)
-                
-        except KeyboardInterrupt:
-            pass
-"""
 
 def accept_wrapper(sock: socket.socket):
     conn, addr = sock.accept()
@@ -109,19 +80,16 @@ def service_connection(key: selectors.SelectorKey, mask):
         if recv_data:
             request = request_parser(recv_data)
             response = HttpResponse()
-            if request.request_method == b"GET":
-                f = get_file_on_path(response, request.request_target)
-                try:
-                    response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\n\r\n", "ISO-8859-1")+f.read()
-                except:
-                    response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\n\r\n", "ISO-8859-1")
-                data.outb += response_bytes
-            elif request.request_method == b"POST":
-                print(request.other_headers)
-
+            f = get_file_on_path(response, request.request_target)
+            try:
+                response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\n\r\n", "ISO-8859-1")+f.read()
+            except:
+                response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\n\r\n", "ISO-8859-1")
+            data.outb += response_bytes
+            
 
         else:
-            print(f"Closing Connection to this massive mother {data.addr}")
+            print(f"Closing Connection to {data.addr}")
             sel.unregister(sock)
             sock.close()
     if mask & selectors.EVENT_WRITE:
@@ -137,9 +105,9 @@ def main():
     lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     lsock.bind((host,port))
     lsock.listen()
-    print(f"[{datetime.datetime.now()}] HTTPSSS Server started on {host}:{port}")
-    print(f"[{datetime.datetime.now()}] Access Your mom on http://{host}:{port}")
-    print(f"[{datetime.datetime.now()}] Press CONTROL-P to exit server")
+    print(f"[{datetime.datetime.now()}] HTTP Server started on {host}:{port}")
+    print(f"[{datetime.datetime.now()}] Access Server on http://{host}:{port}")
+    print(f"[{datetime.datetime.now()}] Press CONTROL-C to exit server")
     lsock.setblocking(False)
     sel.register(lsock, selectors.EVENT_READ, data=None)
     try:
