@@ -66,7 +66,7 @@ def get_file_on_path(response: HttpResponse, path):
 
 def accept_wrapper(sock: socket.socket):
     conn, addr = sock.accept()
-    print(f"Connection Accepted from {addr}")
+    print(f"[{datetime.datetime.now()}] Connection Accepted from {addr}")
     conn.setblocking(False)
     data = types.SimpleNamespace(addr=addr, inb=b"", outb=b"")
     events = selectors.EVENT_READ | selectors.EVENT_WRITE
@@ -90,7 +90,7 @@ def service_connection(key: selectors.SelectorKey, mask):
                 
 
             else:
-                print(f"Closing Connection to {data.addr}")
+                print(f"[{datetime.datetime.now()}] Closing Connection to {data.addr}")
                 sel.unregister(sock)
                 sock.close()
         except:
