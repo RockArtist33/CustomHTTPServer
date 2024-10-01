@@ -82,9 +82,9 @@ def service_connection(key: selectors.SelectorKey, mask):
             response = HttpResponse()
             f = get_file_on_path(response, request.request_target)
             try:
-                response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\n\r\n", "ISO-8859-1")+f.read()
+                response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\nCustom-Header: 0\r\n\r\n", "ISO-8859-1")+f.read()
             except:
-                response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\n\r\n", "ISO-8859-1")
+                response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\nCustom-Header: 0\r\n\r\n", "ISO-8859-1")
             data.outb += response_bytes
             
 
@@ -120,7 +120,7 @@ def main():
                     service_connection(key,mask)
     except (KeyboardInterrupt or Exception) as e:
         e.with_traceback(None)
-        print("Server Closing")
+        print(f"\r[{datetime.datetime.now()}] Server Closing")
 
 if __name__ == "__main__":
     main()
