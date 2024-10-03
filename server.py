@@ -1,4 +1,5 @@
 import sys
+import jal
 import os
 import socket
 import datetime
@@ -65,14 +66,16 @@ def get_file_on_path(response: HttpResponse, path):
         
 
 def accept_wrapper(sock: socket.socket):
+    global logger
     conn, addr = sock.accept()
-    print(f"[{datetime.datetime.now()}] Connection Accepted from {addr}")
+    logger.log(jal.NOTICE,f" Connection Accepted from {addr}")
     conn.setblocking(False)
     data = types.SimpleNamespace(addr=addr, inb=b"", outb=b"")
     events = selectors.EVENT_READ | selectors.EVENT_WRITE
     sel.register(conn, events, data=data)
 
 def service_connection(key: selectors.SelectorKey, mask):
+    global logger
     sock: socket.socket = key.fileobj
     data = key.data
     if mask & selectors.EVENT_READ:
@@ -90,11 +93,11 @@ def service_connection(key: selectors.SelectorKey, mask):
                 
 
             else:
-                print(f"[{datetime.datetime.now()}] Closing Connection to {data.addr}")
+                logger.log(jal.NOTICE,f" Closing Connection to {data.addr}")
                 sel.unregister(sock)
                 sock.close()
         except:
-            print(f"[{datetime.datetime.now()}] Unexpected Error, Dropping Connection...")
+            logger.log(jal.NOTICE,f" Unexpected Error, Dropping Connection...")
             sel.unregister(sock)
             sock.close()
     if mask & selectors.EVENT_WRITE:
@@ -106,13 +109,17 @@ def service_connection(key: selectors.SelectorKey, mask):
 
 def main():
     #host, port = sys.argv[1].split(":")[0], int(sys.argv[1].split(":")[1])
+    logger = jal.Logger()
+    logger.setup(type=jal.INFO, filenameDirectory = "./", filename = f"{str(datetime.date.today())}.log")
+
+
     host,port = "0.0.0.0", 8080
     lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     lsock.bind((host,port))
     lsock.listen()
-    print(f"[{datetime.datetime.now()}] HTTP Server started on {host}:{port}")
-    print(f"[{datetime.datetime.now()}] Access Server on http://{host}:{port}")
-    print(f"[{datetime.datetime.now()}] Press CONTROL-C to exit server")
+    logger.log(jal.INFO,f"HTTP Server started on {host}:{port}")
+    logger.log(jal.INFO,f"Access Server on http://{host}:{port}")
+    logger.log(jal.INFO,f"Press CONTROL-C to exit server")
     lsock.setblocking(False)
     sel.register(lsock, selectors.EVENT_READ, data=None)
     try:
@@ -125,7 +132,8 @@ def main():
                     service_connection(key,mask)
     except (KeyboardInterrupt or Exception) as e:
         e.with_traceback(None)
-        print(f"\r[{datetime.datetime.now()}] Server Closing")
+        print("\r", end="")
+        logger.log(jal.INFO,f"Server Closing")
 
 if __name__ == "__main__":
     main()
