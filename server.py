@@ -81,12 +81,19 @@ def service_connection(key: selectors.SelectorKey, mask, logger: jal.Logger):
             recv_data = sock.recv(1024)
             if recv_data:
                 request = request_parser(recv_data)
+                
                 response = HttpResponse()
                 f = get_file_on_path(response, request.request_target)
                 try:
                     response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\nCustom-Header: 0\r\n\r\n", "ISO-8859-1")+f.read()
                 except:
                     response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\nCustom-Header: 0\r\n\r\n", "ISO-8859-1")
+                for i in request.other_headers:
+                    if "CensysInspect" in str(i):
+                        response_bytes = bytes(f"HTTP/{response.HTTP_VERSION} {response.status} {response.status_message}\r\nDate: {response.request_date}\r\nServer: {response.server_name}\r\nLast-Modified: {response.modified_date}\r\nAccept-Ranges: {response.acc_ranges}\r\nContent-Type: {response.content_type}\r\nCustom-Header: 0\r\n\r\n Hello Censys :)", "ISO-8859-1")
+
+
+
                 data.outb += response_bytes
                 
 
