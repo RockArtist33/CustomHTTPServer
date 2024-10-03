@@ -132,6 +132,8 @@ def main():
         e.with_traceback(None)
         print("\r", end="")
         logger.log(jal.INFO,f"Server Closing")
+        lsock.detach()
+        lsock.close()
 
 if __name__ == "__main__":
     main()
