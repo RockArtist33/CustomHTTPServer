@@ -65,8 +65,7 @@ def get_file_on_path(response: HttpResponse, path):
         return ""
         
 
-def accept_wrapper(sock: socket.socket):
-    global logger
+def accept_wrapper(sock: socket.socket, logger: jal.Logger):
     conn, addr = sock.accept()
     logger.log(jal.NOTICE,f" Connection Accepted from {addr}")
     conn.setblocking(False)
@@ -74,8 +73,7 @@ def accept_wrapper(sock: socket.socket):
     events = selectors.EVENT_READ | selectors.EVENT_WRITE
     sel.register(conn, events, data=data)
 
-def service_connection(key: selectors.SelectorKey, mask):
-    global logger
+def service_connection(key: selectors.SelectorKey, mask, logger: jal.Logger):
     sock: socket.socket = key.fileobj
     data = key.data
     if mask & selectors.EVENT_READ:
@@ -127,9 +125,9 @@ def main():
             events = sel.select(timeout=None)
             for key, mask in events:
                 if key.data is None:
-                    accept_wrapper(key.fileobj)
+                    accept_wrapper(key.fileobj, logger)
                 else:
-                    service_connection(key,mask)
+                    service_connection(key,mask, logger)
     except (KeyboardInterrupt or Exception) as e:
         e.with_traceback(None)
         print("\r", end="")
